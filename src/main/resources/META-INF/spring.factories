@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.zj.common.eureka.config.EurekaAuthConfiguration
+com.zj.common.eureka.config.EurekaFeignAuthConfiguration
