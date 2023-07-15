@@ -1,6 +1,6 @@
 package com.zj.common.exception;
 
-import com.zj.common.json.GsonUtil;
+import com.zj.common.json.JsonUtil;
 import com.zj.common.web.WebUtils;
 import org.springframework.lang.Nullable;
 
@@ -72,7 +72,7 @@ public class ValidateUtil {
     public static void exceptionByTrue(Boolean flag, ResultCode resultCode, HttpServletResponse response) {
         if (Boolean.TRUE.equals(flag)) {
             Result<Object> fail = Result.fail(resultCode);
-            WebUtils.renderString(response, GsonUtil.toJSONString(fail));
+            WebUtils.renderString(response, JsonUtil.toJSONString(fail));
         }
     }
 
@@ -91,7 +91,7 @@ public class ValidateUtil {
     public static void exceptionByFalse(Boolean flag, ResultCode resultCode, HttpServletResponse response) {
         if (Boolean.FALSE.equals(flag)) {
             Result<Object> fail = Result.fail(resultCode);
-            WebUtils.renderString(response, GsonUtil.toJSONString(fail));
+            WebUtils.renderString(response, JsonUtil.toJSONString(fail));
         }
     }
 

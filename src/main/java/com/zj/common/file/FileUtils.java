@@ -30,11 +30,11 @@ public class FileUtils {
      */
     public static List<String> readLines(String pathString) {
         List<String> result = Collections.emptyList();
-        Path path = Paths.get(pathString);
+        final Path path = Paths.get(pathString);
         // 文件是否存在
-        boolean isExists = Files.exists(path);
+        final boolean isExists = Files.exists(path);
         if (!isExists) {
-            String message = String.format("%s 文件不存在！", pathString);
+            final String message = String.format("%s 文件不存在！", pathString);
             throw new RuntimeException(message);
         }
         try (Stream<String> lines = Files.lines(path)) {
@@ -55,11 +55,11 @@ public class FileUtils {
      */
     public static Map<Integer, String> findContentByKeyWord(String pathString, String keyword) {
         Map<Integer, String> result = new HashMap<>();
-        Path path = Paths.get(pathString);
+        final Path path = Paths.get(pathString);
         // 文件是否存在
-        boolean isExists = Files.exists(path);
+        final boolean isExists = Files.exists(path);
         if (!isExists) {
-            String message = String.format("%s 文件不存在！", pathString);
+            final String message = String.format("%s 文件不存在！", pathString);
             throw new RuntimeException(message);
         }
         try (final FileInputStream fileInputStream = new FileInputStream(pathString);
