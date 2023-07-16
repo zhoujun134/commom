@@ -31,6 +31,6 @@ public class FeignClientRequestInterceptor implements RequestInterceptor {
         if (headers.containsKey(authKey)) {
             return;
         }
-        requestTemplate.header(authKey, EncryptionUtil.encryptWithRSA(authToken));
+        requestTemplate.header(authKey, EncryptionUtil.hashWithSHA256(authToken));
     }
 }

@@ -29,8 +29,8 @@ public class EurekaServerAuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         final String reqAuthToken = request.getHeader(authKey);
         ValidateUtil.exceptionByTrue(StringUtils.isBlank(reqAuthToken), ResultCode.NO_AUTH);
-        final String rsaToken = EncryptionUtil.encryptWithRSA(authToken);
-        ValidateUtil.exceptionByFalse(StringUtils.equals(rsaToken, reqAuthToken), ResultCode.NO_AUTH);
+        final String sha256 = EncryptionUtil.hashWithSHA256(authToken);
+        ValidateUtil.exceptionByFalse(StringUtils.equals(sha256, reqAuthToken), ResultCode.NO_AUTH);
         log.info("######preHandle: auth right!");
         return true;
     }

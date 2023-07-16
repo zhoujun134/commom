@@ -69,7 +69,7 @@ public class EncryptionUtil {
         KeyPair keyPair = generateRSAKeyPair();
         byte[] encryptedBytes = new byte[0];
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
+            cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPrivate());
             encryptedBytes = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             log.error("EncryptionUtil######encryptWithRSA 加密异常！", e);
@@ -219,4 +219,14 @@ public class EncryptionUtil {
         return new String(base64Bytes, StandardCharsets.UTF_8);
     }
 
+    public static void main(String[] args) {
+        String pwd = "123455";
+
+        String encryptWithRSA = encryptWithRSA(pwd);
+        String decryptWithRSA = decryptWithRSA(pwd);
+
+        System.out.println("pwd=" + pwd + " encryptWithRSA=" + encryptWithRSA);
+        System.out.println("pwd=" + pwd + " decryptWithRSA=" + decryptWithRSA);
+
+    }
 }
