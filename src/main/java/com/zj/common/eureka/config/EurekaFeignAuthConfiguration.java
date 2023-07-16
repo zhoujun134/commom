@@ -2,6 +2,7 @@ package com.zj.common.eureka.config;
 
 import com.zj.common.constants.ConfigConstants;
 import com.zj.common.eureka.auth.interceptor.EurekaServerAuthInterceptor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import java.util.Objects;
  * @Date: 2023/5/27 18:16
  */
 @Configuration
+@Slf4j
 public class EurekaFeignAuthConfiguration implements WebMvcConfigurer {
 
     @Value("eureka.server.auth.key:NONE")
@@ -30,6 +32,7 @@ public class EurekaFeignAuthConfiguration implements WebMvcConfigurer {
     @Bean
     public EurekaServerAuthInterceptor eurekaServerAuthInterceptor() {
         if (StringUtils.equals(ConfigConstants.NONE.getCode(), authKey)) {
+            log.info("######eurekaServerAuthInterceptor: authKey is null!");
             return null;
         }
         return new EurekaServerAuthInterceptor(authKey, authToken);
@@ -39,14 +42,17 @@ public class EurekaFeignAuthConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         final EurekaServerAuthInterceptor eurekaServerAuthInterceptor = eurekaServerAuthInterceptor();
         if (Objects.isNull(eurekaServerAuthInterceptor)) {
+            log.info("######addInterceptors: eurekaServerAuthInterceptor is null!");
             return;
         }
         if (Objects.isNull(authPathPatterns)
                 || authPathPatterns.length == 0
                 || StringUtils.equals(authPathPatterns[0], ConfigConstants.NONE.getCode())) {
+            log.info("######addInterceptors: 需要认证的路径配置为空！authPathPatterns is empty ！");
             return;
         }
         registry.addInterceptor(eurekaServerAuthInterceptor())
                 .addPathPatterns(authPathPatterns);
+        log.info("######addInterceptors: registry.addInterceptor add success !");
     }
 }
