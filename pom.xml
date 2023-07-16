@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.zj</groupId>
     <artifactId>common</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
     <name>zjCommon</name>
     <description>zjCommon</description>
     <properties>
@@ -14,6 +14,16 @@
         <lombok.version>1.18.26</lombok.version>
         <spring-cloud.version>2021.0.7</spring-cloud.version>
     </properties>
+
+    <distributionManagement>
+        <repository>
+            <!-- 下面是这个也是随意，我是{gitee账号}-{仓库名} 来写的 -->
+            <id>zj-common-utils</id>
+            <!-- 下面的地址是当deploy的时候，项目部署的位置，我们需要先存在电脑的某个位置,所以根据自己决定 -->
+            <!--            <url>https://gitee.com/junzhou134/zjCommonUtils/raw/master</url>-->
+            <url>file:/Users/zhoujun/IdeaProjects/work/maven</url>
+        </repository>
+    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -56,21 +66,10 @@
             <artifactId>spring-webmvc</artifactId>
             <version>5.1.10.RELEASE</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>javax.servlet</groupId>-->
-<!--            <artifactId>javax.servlet-api</artifactId>-->
-<!--            <version>4.0.1</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>8.0.1</version>
-        </dependency>
-        <!--jwt依赖-->
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -82,6 +81,11 @@
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.15.1</version>
+        </dependency>
 
     </dependencies>
     <build>
@@ -92,15 +96,25 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
                 </configuration>
             </plugin>
+
+            <!-- 配置jar包启动的主类以及依赖的classpath路径 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
     </build>
 
 </project>
