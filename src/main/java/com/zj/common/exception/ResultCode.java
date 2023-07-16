@@ -61,7 +61,14 @@ public enum ResultCode {
     DB_USER_INFO_INSERT_FAILED(8, "用户信息入库失败！"),
     DB_USER_NOT_LOGIN_NO_PERMIT(9, "用户没有登录，没有数据库的操作权限！"),
     QUERY_MENU_LIST_USER_NOT_LOGIN_NO_PERMIT(10, "用户没有登录，无法获取菜单列表！"),
-
+    ENCRYPTION_UTIL_ASE_NOT_SUPPORT_EXCEPTION(11, "EncryptionUtil######generateAESKey keyGenerator is null, Not Supported !"),
+    ENCRYPTION_UTIL_SHA256_NOT_SUPPORT_EXCEPTION(12, "EncryptionUtil Sha256 Not Supported !"),
+    ENCRYPTION_UTIL_RSA_NOT_SUPPORT_EXCEPTION(13, "EncryptionUtil RSA Not Supported !"),
+    ENCRYPTION_UTIL_RSA_KEY_PAIR_NOT_SUPPORT_EXCEPTION(13, "EncryptionUtil RSA keyPairGenerator Not Supported !"),
+    /**
+     * 无权限操作
+     */
+    NO_AUTH(401, "未授权，无权访问！"),
     /**
      * 无权限操作
      */

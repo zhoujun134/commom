@@ -1,19 +1,21 @@
 package com.zj.common.encryption;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
+import com.zj.common.exception.ResultCode;
+import com.zj.common.exception.ValidateUtil;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.util.Base64;
+
+import static com.zj.common.exception.ResultCode.ENCRYPTION_UTIL_SHA256_NOT_SUPPORT_EXCEPTION;
 
 /**
  * 加密解密工具类，提供常用的加密解密方法
  */
+@Slf4j
 public class EncryptionUtil {
 
     /**
@@ -22,13 +24,17 @@ public class EncryptionUtil {
      * @param plaintext 明文
      * @param password  密码
      * @return 加密后的密文
-     * @throws Exception 加密异常
      */
-    public static String encryptWithAES(String plaintext, String password) throws Exception {
-        final Cipher cipher = Cipher.getInstance("AES");
+    public static String encryptWithAES(String plaintext, String password) {
+        final Cipher cipher = getAESCipher();
         final SecretKey secretKey = generateAESKey(password);
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        final byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
+        byte[] encryptedBytes = new byte[0];
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            encryptedBytes = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            log.error("EncryptionUtil######encryptWithAES 加密异常！", e);
+        }
         return Base64.getEncoder().encodeToString(encryptedBytes);
     }
 
@@ -38,13 +44,17 @@ public class EncryptionUtil {
      * @param ciphertext 密文
      * @param password   密码
      * @return 解密后的明文
-     * @throws Exception 解密异常
      */
-    public static String decryptWithAES(String ciphertext, String password) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES");
+    public static String decryptWithAES(String ciphertext, String password) {
+        Cipher cipher = getAESCipher();
         SecretKey secretKey = generateAESKey(password);
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(ciphertext));
+        byte[] decryptedBytes = new byte[0];
+        try {
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(ciphertext));
+        } catch (Exception e) {
+            log.error("EncryptionUtil######decryptWithAES 解密异常！", e);
+        }
         return new String(decryptedBytes, StandardCharsets.UTF_8);
     }
 
@@ -53,30 +63,36 @@ public class EncryptionUtil {
      *
      * @param plaintext 明文
      * @return 加密后的密文
-     * @throws Exception 加密异常
      */
-    public static String encryptWithRSA(String plaintext) throws Exception {
-        Cipher cipher = Cipher.getInstance("RSA");
+    public static String encryptWithRSA(String plaintext) {
+        Cipher cipher = getRSACipher();
         KeyPair keyPair = generateRSAKeyPair();
-        cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
-        byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
+        byte[] encryptedBytes = new byte[0];
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
+            encryptedBytes = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            log.error("EncryptionUtil######encryptWithRSA 加密异常！", e);
+        }
         return Base64.getEncoder().encodeToString(encryptedBytes);
     }
 
     /**
-    
-
- * 非对称加密算法RSA解密
+     * 非对称加密算法RSA解密
      *
      * @param ciphertext 密文
      * @return 解密后的明文
-     * @throws Exception 解密异常
      */
-    public static String decryptWithRSA(String ciphertext) throws Exception {
-        Cipher cipher = Cipher.getInstance("RSA");
+    public static String decryptWithRSA(String ciphertext) {
+        Cipher cipher = getRSACipher();
         KeyPair keyPair = generateRSAKeyPair();
-        cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(ciphertext));
+        byte[] decryptedBytes = new byte[0];
+        try {
+            cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
+            decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(ciphertext));
+        } catch (Exception e) {
+            log.error("EncryptionUtil######decryptWithRSA 解密异常！", e);
+        }
         return new String(decryptedBytes, StandardCharsets.UTF_8);
     }
 
@@ -85,12 +101,66 @@ public class EncryptionUtil {
      *
      * @param plaintext 明文
      * @return 哈希值
-     * @throws NoSuchAlgorithmException 哈希算法不支持异常
      */
-    public static String hashWithSHA256(String plaintext) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+    public static String hashWithSHA256(String plaintext) {
+        MessageDigest digest = getSha256Digest();
         byte[] hashBytes = digest.digest(plaintext.getBytes(StandardCharsets.UTF_8));
         return bytesToHex(hashBytes);
+    }
+
+    public static MessageDigest getSha256Digest() {
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            log.warn("EncryptionUtil######hashWithSHA256 哈希算法不支持异常 获取 SHA-256 的 MessageDigest 获取实例失败！", e);
+        }
+        ValidateUtil.requireNonNull(digest, ENCRYPTION_UTIL_SHA256_NOT_SUPPORT_EXCEPTION);
+        return digest;
+    }
+
+    public static KeyGenerator getAESKeyGenerator() {
+        KeyGenerator keyGenerator = null;
+        try {
+            keyGenerator = KeyGenerator.getInstance("AES");
+        } catch (NoSuchAlgorithmException e) {
+            log.warn("EncryptionUtil######generateAESKey 密钥生成算法不支持异常 获取 AES 的 KeyGenerator 获取实例失败！", e);
+        }
+        ValidateUtil.requireNonNull(keyGenerator, ResultCode.ENCRYPTION_UTIL_ASE_NOT_SUPPORT_EXCEPTION);
+        return keyGenerator;
+    }
+
+    public static Cipher getRSACipher() {
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("RSA");
+        } catch (Exception e) {
+            log.warn("EncryptionUtil######getRSACipher 密钥生成算法不支持异常 获取 RSA 的 Cipher 获取实例失败！", e);
+        }
+        ValidateUtil.requireNonNull(cipher, ResultCode.ENCRYPTION_UTIL_RSA_NOT_SUPPORT_EXCEPTION);
+        return cipher;
+    }
+
+    public static Cipher getAESCipher() {
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("AES");
+        } catch (Exception e) {
+            log.warn("EncryptionUtil######getAESCipher 密钥生成算法不支持异常 获取 AES 的 Cipher 获取实例失败！", e);
+        }
+        ValidateUtil.requireNonNull(cipher, ResultCode.ENCRYPTION_UTIL_ASE_NOT_SUPPORT_EXCEPTION);
+        return cipher;
+    }
+
+    public static KeyPairGenerator getRSAKeyPairGenerator() {
+        KeyPairGenerator keyPairGenerator = null;
+        try {
+            keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        } catch (Exception e) {
+            log.warn("EncryptionUtil######getRSAKeyPairGenerator 密钥生成算法不支持异常 获取 RSA 的 KeyPairGenerator 获取实例失败！", e);
+        }
+        ValidateUtil.requireNonNull(keyPairGenerator, ResultCode.ENCRYPTION_UTIL_RSA_KEY_PAIR_NOT_SUPPORT_EXCEPTION);
+        return keyPairGenerator;
     }
 
     /**
@@ -98,13 +168,12 @@ public class EncryptionUtil {
      *
      * @param password 密码
      * @return 密钥
-     * @throws NoSuchAlgorithmException 密钥生成算法不支持异常
      */
-    private static SecretKey generateAESKey(String password) throws NoSuchAlgorithmException {
-        final KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+    private static SecretKey generateAESKey(String password) {
+        KeyGenerator keyGenerator = getAESKeyGenerator();
         keyGenerator.init(128);
         final byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
-        final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        final MessageDigest digest = getSha256Digest();
         final byte[] keyBytes = digest.digest(passwordBytes);
         return new SecretKeySpec(keyBytes, "AES");
     }
@@ -113,10 +182,9 @@ public class EncryptionUtil {
      * 生成RSA密钥对
      *
      * @return 密钥对
-     * @throws NoSuchAlgorithmException 密钥生成算法不支持异常
      */
-    private static KeyPair generateRSAKeyPair() throws NoSuchAlgorithmException {
-        final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+    private static KeyPair generateRSAKeyPair() {
+        final KeyPairGenerator keyPairGenerator = getRSAKeyPairGenerator();
         keyPairGenerator.initialize(2048);
         return keyPairGenerator.generateKeyPair();
     }
