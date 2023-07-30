@@ -1,0 +1,15 @@
+
+## 判定是否是 feign 调用的唯一标识，在请求头中，设置改参数，会自动放过
+feign:
+  call:
+    unique:
+      identification: 123456
+
+eureka:
+  server:
+    auth:
+      key: zjTokenKey
+      token: zjTokenKey
+      path:
+        pattern:
+          /api
