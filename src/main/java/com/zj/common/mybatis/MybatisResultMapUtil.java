@@ -93,8 +93,4 @@ public class MybatisResultMapUtil {
             return "未知类型";
         }
     }
-//
-//    public static void main(String[] args) {
-//        System.out.println(getResultMap(BaseDo.class));
-//    }
 }
