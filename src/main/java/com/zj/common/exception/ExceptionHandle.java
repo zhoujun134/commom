@@ -1,5 +1,6 @@
 package com.zj.common.exception;
 
+import com.zj.common.web.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

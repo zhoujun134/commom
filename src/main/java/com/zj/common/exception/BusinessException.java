@@ -5,7 +5,7 @@ package com.zj.common.exception;
  * @date 2022/9/18 10:20
  * @since 1.8
  */
-public class BusinessException extends RuntimeException{
+public class BusinessException extends RuntimeException {
     private int code = -1;
     private final Object result;
 

@@ -1,6 +1,7 @@
 package com.zj.common.exception;
 
 import com.zj.common.json.JsonUtil;
+import com.zj.common.web.result.Result;
 import com.zj.common.web.WebUtils;
 import org.springframework.lang.Nullable;
 
@@ -14,12 +15,12 @@ public class ValidateUtil {
      * 断言对象不为空，为空则抛出异常
      *
      * @param object       对象
-     * @param httpCodeEnum 状态码枚举类
+     * @param exception 状态码枚举类
      * @throws BusinessException 系统异常
      */
-    public static void notNull(@Nullable Object object, ResultCode httpCodeEnum) {
-        if (object == null) {
-            throw new BusinessException(httpCodeEnum);
+    public static void exceptionByNotNull(@Nullable Object object, ResultCode exception) {
+        if (object != null) {
+            throw new BusinessException(exception);
         }
     }
 
@@ -30,8 +31,8 @@ public class ValidateUtil {
      * @param httpCodeEnum 状态码枚举类
      * @throws BusinessException 系统异常
      */
-    public static void isNull(Object object, ResultCode httpCodeEnum) {
-        if (object != null) {
+    public static void exceptionByNull(Object object, ResultCode httpCodeEnum) {
+        if (object == null) {
             throw new BusinessException(httpCodeEnum);
         }
     }

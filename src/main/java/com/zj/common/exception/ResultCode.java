@@ -24,7 +24,7 @@ public enum ResultCode {
     FAIL(-1, "请求错误，请联系管理员！"),
 
     /**
-     * 当前用户未登录! 
+     * 当前用户未登录!
      */
     USER_NOT_LOGIN(1, "当前用户未登录! "),
     /**
@@ -95,9 +95,7 @@ public enum ResultCode {
     FILE_NOT_FOUND(2000, "%s 文件不存在！"),
 
 
-
     ;
-
 
     /**
      * 异常 code
@@ -124,8 +122,9 @@ public enum ResultCode {
 
     /**
      * 获取带参数的 resultCode 信息
+     *
      * @param resultCode 原始的 resultCode
-     * @param args 参数信息
+     * @param args       参数信息
      * @return 更新参数后的 resultCode
      */
     public static ResultCode getResultCode(ResultCode resultCode, Object... args) {
@@ -136,8 +135,9 @@ public enum ResultCode {
 
     /**
      * 获取带参数的 resultCode 信息
+     *
      * @param resultCode 原始的 resultCode
-     * @param args 参数信息
+     * @param args       参数信息
      * @return 更新参数后的 resultCode
      */
     public static ResultCode getResultCode(ResultCode resultCode, Object args) {

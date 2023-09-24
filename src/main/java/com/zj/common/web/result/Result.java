@@ -1,6 +1,7 @@
-package com.zj.common.exception;
+package com.zj.common.web.result;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.zj.common.exception.ResultCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
